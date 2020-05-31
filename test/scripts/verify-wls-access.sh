@@ -35,16 +35,27 @@ else
 fi
 
 #Verifying whether managed servers are up/running
-# Not doing any attempt like admin server, as once admin server is up REST commands should work without multiple attempts
 export managedServers="#managedServers#"
 for managedServer in $managedServers
 do
   echo "Verifying managed server : $managedServer"
-  curl --user #wlsUserName#:#wlspassword# -X GET -H 'X-Requested-By: MyClient' -H 'Content-Type: application/json' -H 'Accept: application/json'  -i "http://#adminVMName#:7001/management/weblogic/latest/domainRuntime/serverRuntimes/$managedServer" | grep "\"state\": \"RUNNING\""
-  if [ $? != 0 ]; then
+  isSuccess=false
+  maxAttempt=3
+  attempt=1
+  while [ $attempt -le 3 ]
+     curl --user #wlsUserName#:#wlspassword# -X GET -H 'X-Requested-By: MyClient' -H 'Content-Type: application/json' -H 'Accept: application/json'  -i "http://#adminVMName#:7001/management/weblogic/latest/domainRuntime/serverRuntimes/$managedServer" | grep "\"state\": \"RUNNING\""
+     if [ $? == 0 ]; then
+       isSuccess=true
+       break
+     fi
+     attempt=`expr $attempt + 1 `
+     sleep 30s
+  done
+  if [[ $isSuccess == "false" ]]; then
     echo "$managedServer managed server is not in RUNNING state"
     exit 1
+  else
+    echo "$managedServer managed server is in RUNNING state"
   fi
 done
-
 exit 0
