@@ -14,9 +14,9 @@ env:
   azCliVersion: 2.0.72
   location: eastus
   nsg: wls-nsg
-  resourceGroupPrefix: wls-${{ github.run_id }}-${{ github.run_number }}
   userEmail: ${{ secrets.USER_EMAIL }}
   userName: ${{ secrets.USER_NAME }}
+  resourceGroupPrefix: ${{ secrets.USER_NAME }}-${{ github.run_id }}-${{ github.run_number }}
   wlsPassword: ${{ secrets.WLS_PASSWORD }}
   adminPassword: ${{ secrets.WLS_PASSWORD }}
   wlsDomainName : clusterDomain
