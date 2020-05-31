@@ -1,6 +1,6 @@
 # Verifying admin server is accessible
 isSuccess=false
-maxAttempt=5
+maxAttempt=10
 attempt=1
 echo "Verifying http://#adminVMName#:7001/weblogic/ready"
 while [ $attempt -le 5 ]
