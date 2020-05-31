@@ -1,14 +1,41 @@
-echo "Wait for few minutes"
-sleep 3m 
 # Verifying admin server is accessible
+isSuccess=false
+maxAttempt=5
+attempt=1
 echo "Verifying http://#adminVMName#:7001/weblogic/ready"
-curl http://#adminVMName#:7001/weblogic/ready 
-if [ $? != 0 ]; then
-  echo "Weblogic admin server is not accessible"
-  exit 1
+while [ $attempt -le 5 ]
+do
+  echo "Attempt $attempt :- Checking WebLogic admin server is accessible"
+  curl http://#adminVMName#:7001/weblogic/ready 
+  if [ $? == 0 ]; then
+     isSuccess=true
+     break
+  fi
+  attempt=`expr $attempt + 1 `
+  sleep 2m
+done
+
+if [[ $isSuccess == "false" ]]; then
+        echo "Failed : WebLogic admin server is not accessible"
+        exit 1
+else
+        echo "WebLogic admin server is accessible"
+fi
+
+sleep 1m
+
+# Verifying whether admin console is accessible
+echo "Checking WebLogic admin console is acessible"
+curl http://#adminVMName#:7001/console/
+if [[ $? != 0 ]]; then
+   echo "WebLogic admin console is not accessible"
+   exit 1
+else
+   echo "WebLogic admin console is accessible"
 fi
 
 #Verifying whether managed servers are up/running
+# Not doing any attempt like admin server, as once admin server is up REST commands should work without multiple attempts
 export managedServers="#managedServers#"
 for managedServer in $managedServers
 do
@@ -17,6 +44,7 @@ do
   if [ $? != 0 ]; then
     echo "$managedServer managed server is not in RUNNING state"
     exit 1
-fi
+  fi
 done
+
 exit 0
