@@ -95,4 +95,4 @@ If you are new to template deployment, see:
 
 Please see [the base project for this effort](https://github.com/edburns/arm-oraclelinux-wls#considerations-for-cicd).
 
-Test1
+Test2
