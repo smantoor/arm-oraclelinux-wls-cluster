@@ -26,6 +26,7 @@ do
   maxAttempt=3
   attempt=1
   while [ $attempt -le 3 ]
+  do
      curl --user #wlsUserName#:#wlspassword# -X GET -H 'X-Requested-By: MyClient' -H 'Content-Type: application/json' -H 'Accept: application/json'  -i "http://#adminVMName#:7001/management/weblogic/latest/domainRuntime/serverRuntimes/$managedServer" | grep "\"state\": \"RUNNING\""
      if [ $? == 0 ]; then
        isSuccess=true
